@@ -53,6 +53,7 @@ const DetalleCaja: React.FC = () => {
   const [saldoInicial, setSaldoInicial] = useState<number>(1000);
   const [diferencia, setDiferencia] = useState<number>(0);
   const [efectivoReal, setEfectivoReal] = useState<number>(224.17);
+  const [selectedLocation, setSelectedLocation] = useState<string>("Sucursal Principal");
   
   // Estados para el loading y selección
   const [loading, setLoading] = useState<boolean>(false);
@@ -573,10 +574,75 @@ const DetalleCaja: React.FC = () => {
     setSnackbar({ ...snackbar, open: false });
   };
 
+  // Manejador para cambio de ubicación
+  const handleLocationChange = (location: string) => {
+    setSelectedLocation(location);
+    
+    // Datos demo para diferentes sucursales
+    if (location === "Sucursal Norte") {
+      setMovimientos([
+        { id: 1, motivo: "Inicio Norte", detalle: "INICIO DE CAJA", total: 1500, ingreso: 1500, egreso: 0, fecha: new Date(), hora: new Date() },
+        { id: 2, motivo: "Ventas Norte", detalle: "CONTADO", total: 450.50, ingreso: 450.50, egreso: 0, fecha: new Date(), hora: new Date() }
+      ]);
+      setArticulosVendidos([
+        { id: 1, codigo: "N123", descripcion: "Producto Norte 1", cantidad: 3, precio: 50, total: 150 },
+        { id: 2, codigo: "N456", descripcion: "Producto Norte 2", cantidad: 2, precio: 75, total: 150 }
+      ]);
+      setEfectivoTotal(1500 + 450.50);
+      setEfectivoReal(1500 + 450.50);
+    } else if (location === "Sucursal Sur") {
+      setMovimientos([
+        { id: 1, motivo: "Inicio Sur", detalle: "FONDO INICIAL", total: 2000, ingreso: 2000, egreso: 0, fecha: new Date(), hora: new Date() },
+        { id: 2, motivo: "Ventas Mayoristas", detalle: "FACTURA A 1234", total: 1200.75, ingreso: 1200.75, egreso: 0, fecha: new Date(), hora: new Date() },
+        { id: 3, motivo: "Gastos Operativos", detalle: "PAGO PROVEEDORES", total: -350.20, ingreso: 0, egreso: 350.20, fecha: new Date(), hora: new Date() }
+      ]);
+      setArticulosVendidos([
+        { id: 1, codigo: "SUR001", descripcion: "BATERIA AUTOS SUR", cantidad: 2, precio: 450, total: 900 },
+        { id: 2, codigo: "SUR002", descripcion: "LUBRICANTE INDUSTRIAL", cantidad: 5, precio: 80, total: 400 }
+      ]);
+      setEfectivoTotal(2000 + 1200.75 - 350.20);
+      setEfectivoReal(2000 + 1200.75 - 350.20);
+    } else if (location === "Sucursal Oeste") {
+      setMovimientos([
+        { id: 1, motivo: "Apertura Caja", detalle: "FONDO OPERATIVO", total: 1800, ingreso: 1800, egreso: 0, fecha: new Date(), hora: new Date() },
+        { id: 2, motivo: "Ventas Minoristas", detalle: "EFECTIVO", total: 650.90, ingreso: 650.90, egreso: 0, fecha: new Date(), hora: new Date() },
+        { id: 3, motivo: "Inversiones", detalle: "COMPRA MERCADERIA", total: -920.50, ingreso: 0, egreso: 920.50, fecha: new Date(), hora: new Date() }
+      ]);
+      setArticulosVendidos([
+        { id: 1, codigo: "OES001", descripcion: "KIT HERRAMIENTAS", cantidad: 3, precio: 220, total: 660 },
+        { id: 2, codigo: "OES002", descripcion: "ILUMINACION LED", cantidad: 10, precio: 35, total: 350 }
+      ]);
+      setEfectivoTotal(1800 + 650.90 - 920.50);
+      setEfectivoReal(1800 + 650.90 - 920.50);
+    } else {
+      // Datos originales para sucursal principal
+      setMovimientos([
+        { id: 1, motivo: "Compras", detalle: "CONTADO", total: -811.20, ingreso: 0, egreso: 811.20, fecha: new Date('2023-04-30'), hora: new Date('2000-01-01T10:15:00') },
+        { id: 2, motivo: "Ventas", detalle: "CONTADO / TARJETA Efectivo", total: 35.37, ingreso: 35.37, egreso: 0, fecha: new Date('2023-04-30'), hora: new Date('2000-01-01T11:30:00') }
+      ]);
+      setArticulosVendidos([
+        { id: 1, codigo: "7551037600520", descripcion: "EVEREADY AA X UNIDAD", cantidad: 5, precio: 5.50, total: 27.50 },
+        { id: 2, codigo: "3892095285", descripcion: "EVEREADY AAA X UNIDAD", cantidad: 3, precio: 7.00, total: 21.00 }
+      ]);
+      setEfectivoTotal(224.17);
+      setEfectivoReal(224.17);
+    }
+    
+    setSnackbar({
+      open: true,
+      message: `Caja de ${location} cargada`,
+      severity: 'info'
+    });
+  };
+
   return (
     <Container maxWidth="lg" sx={{ py: 3 }}>
       <Paper elevation={3} sx={{ p: 3, borderRadius: 2 }}>
-        <CajaHeader estado={estado} />
+        <CajaHeader 
+          estado={estado} 
+          selectedLocation={selectedLocation}
+          onLocationChange={handleLocationChange}
+        />
 
         <CajaCards
           numeroCaja={numeroCaja}
