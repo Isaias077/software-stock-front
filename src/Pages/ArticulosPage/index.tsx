@@ -1,7 +1,6 @@
-// src/Pages/ArticulosPage/index.tsx
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Snackbar, Alert, Box } from '@mui/material';
-import { ProductTableItem, ProductDetail, SnackbarState } from './types';
+import { ProductTableItem, ProductDetail } from './types';
 import ProductHeader from '../../components/ArticulosPage/ProductHeader';
 import StatisticsSection from '../../components/ArticulosPage/StatisticsSection';
 import TabsNavigation from '../../components/ArticulosPage/TabsNavigation';
@@ -36,8 +35,6 @@ const familias = ['ARTICULOS', 'BEBIDAS', 'LIMPIEZA', 'PERFUMERIA', 'ALIMENTOS']
 const proveedores = ['EVEREADY', 'GILLETTE', 'EXPRESS', 'COLGATE', 'UNILEVER'];
 
 function ArticulosPage() {
-    const tableRef = useRef<HTMLDivElement>(null);
-
     // Estados para los datos
     const [productData, setProductData] = useState<ProductTableItem[]>(initialProductData);
     const [filteredData, setFilteredData] = useState<ProductTableItem[]>(initialProductData);
@@ -87,11 +84,11 @@ function ArticulosPage() {
         severity: 'success'
     });
 
-    // Estadísticas rápidas
+    /* Estadísticas rápidas
     const totalProducts = productData.length;
     const outOfStockProducts = productData.filter(p => p.stock <= 0).length;
     const totalValue = productData.reduce((sum, product) => sum + (product.precio * product.stock), 0);
-
+    */
     // Filtrar productos cuando cambia la búsqueda
     useEffect(() => {
         if (searchQuery.trim() === '') {
