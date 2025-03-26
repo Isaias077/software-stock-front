@@ -72,7 +72,8 @@ const ProductForm: React.FC<ProductFormProps> = ({
                                         size="small"
                                         name="codigo"
                                         value={selectedProduct.codigo}
-                                        disabled={true} // Código siempre deshabilitado
+                                        onChange={handleInputChange}
+                                        disabled={false} // Hacemos el código siempre editable
                                         InputProps={{
                                             endAdornment: !isEditing ? (
                                                 <InputAdornment position="end">

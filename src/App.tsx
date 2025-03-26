@@ -487,7 +487,7 @@ const App: React.FC = () => {
                               variant="caption" 
                               align="center" 
                               sx={{ 
-                                fontSize: '0.67rem',
+                                fontSize: '0.90rem',
                                 fontWeight: activePage === item.key ? 'bold' : 'regular',
                                 color: activePage === item.key ? 'white' : 'text.secondary',
                                 display: 'block'

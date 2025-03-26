@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Snackbar, Alert, Box } from '@mui/material';
+import { Container, Snackbar, Alert } from '@mui/material';
 import { ProductTableItem, ProductDetail } from './types';
 import ProductHeader from '../../components/ArticulosPage/ProductHeader';
 import StatisticsSection from '../../components/ArticulosPage/StatisticsSection';
-import TabsNavigation from '../../components/ArticulosPage/TabsNavigation';
 import ProductTable from '../../components/ArticulosPage/ProductTable';
 import ProductForm from '../../components/ArticulosPage/ProductForm';
 import ActionButtons from '../../components/ArticulosPage/ActionButtons';
@@ -12,23 +11,15 @@ import ExitDialog from '../../components/ArticulosPage/Dialogs/ExitDialog';
 import ImageDialog from '../../components/ArticulosPage/Dialogs/ImageDialog';
 import ExportDialog from '../../components/ArticulosPage/Dialogs/ExportDialog';
 import LoadingIndicator from '../../components/ArticulosPage/LoadingIndicator';
+import ProductModal from '../../components/ArticulosPage/ProductModal';
 
 const initialProductData: ProductTableItem[] = [
     { codigo: '77985255158301', detalle: 'ESPUMA', familia: 'ARTICULOS', precio: 17.00, stock: 0 },
-    { codigo: '77959472050014', detalle: 'ESPUMA ARTIFICIAL', familia: 'ARTICULOS', precio: 9.50, stock: 0 },
-    { codigo: '40258004371305', detalle: 'ESPUMA DE AFEITAR', familia: 'ARTICULOS', precio: 13.00, stock: 0 },
-    { codigo: '77932116052476', detalle: 'ESPUMA GILLETTE', familia: 'ARTICULOS', precio: 15.00, stock: 0 },
     { codigo: '47402241459', detalle: 'ESPUMA GILLETTE', familia: 'ARTICULOS', precio: 24.00, stock: 53 },
     { codigo: '77932186951123', detalle: 'ESPUMA GILLETTE 150', familia: 'ARTICULOS', precio: 21.00, stock: 0 },
     { codigo: '7551037600520', detalle: 'EVEREADY AA X UNIDAD', familia: 'ARTICULOS', precio: 5.50, stock: 0 },
-    { codigo: '3892095285', detalle: 'EVEREADY AAA X UNIDAD', familia: 'ARTICULOS', precio: 7.00, stock: 0 },
-    { codigo: '7551037600182', detalle: 'EVEREADY C MEDIANA X UNO', familia: 'ARTICULOS', precio: 12.00, stock: 0 },
-    { codigo: '7551037600018', detalle: 'EVEREADY D GRANDE X UNO', familia: 'ARTICULOS', precio: 16.00, stock: 0 },
     { codigo: '7802300790298', detalle: 'EXTRACTO TABACO', familia: 'ARTICULOS', precio: 11.50, stock: 0 },
     { codigo: '7622300847234', detalle: 'EXPRESS', familia: 'ARTICULOS', precio: 25.50, stock: 0 },
-    { codigo: '7622300299637', detalle: 'EXPRESS CLASICA', familia: 'ARTICULOS', precio: 22.80, stock: 0 },
-    { codigo: '7622300087722', detalle: 'EXPRESS LIGHT', familia: 'ARTICULOS', precio: 23.50, stock: 0 },
-    { codigo: '7622300792148', detalle: 'EXPRESS 3 3', familia: 'ARTICULOS', precio: 13.50, stock: 0 },
   ];
 
 const familias = ['ARTICULOS', 'BEBIDAS', 'LIMPIEZA', 'PERFUMERIA', 'ALIMENTOS'];
@@ -66,8 +57,12 @@ function ArticulosPage() {
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
     const [sortField, setSortField] = useState<string>('codigo');
     const [searchQuery, setSearchQuery] = useState<string>('');
-    const [activeTab, setActiveTab] = useState<number>(0);
     const [loading, setLoading] = useState<boolean>(false);
+    const [originalProductCode, setOriginalProductCode] = useState<string>(''); // Para rastrear el código original
+    
+    // Estado para el modal
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false); //@ts-ignore
+    const [modalMode, setModalMode] = useState<'edit' | 'create' | ''>('');
 
     // Estados para diálogos y notificaciones
     const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
@@ -84,11 +79,10 @@ function ArticulosPage() {
         severity: 'success'
     });
 
-    /* Estadísticas rápidas
-    const totalProducts = productData.length;
-    const outOfStockProducts = productData.filter(p => p.stock <= 0).length;
-    const totalValue = productData.reduce((sum, product) => sum + (product.precio * product.stock), 0);
-    */
+    // Este estado lo mantenemos por compatibilidad con componentes hijos
+    //@ts-ignore
+    const [activeTab, setActiveTab] = useState<number>(0);
+
     // Filtrar productos cuando cambia la búsqueda
     useEffect(() => {
         if (searchQuery.trim() === '') {
@@ -107,10 +101,6 @@ function ArticulosPage() {
     // Manejadores de interacción
     const handleRowClick = (product: ProductTableItem) => {
         if (!isEditing) {
-            // Buscar los detalles completos del producto
-            //@ts-ignore
-            const currentProductInTable = productData.find(p => p.codigo === product.codigo);
-
             setSelectedProduct({
                 ...selectedProduct,
                 codigo: product.codigo,
@@ -124,6 +114,13 @@ function ArticulosPage() {
         }
     };
 
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+        setIsEditing(false);
+        setIsNewProduct(false);
+        setModalMode('');
+    };
+
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
 
@@ -134,6 +131,9 @@ function ArticulosPage() {
         const processedValue = numericFields.includes(name) ?
             (value === '' ? 0 : parseFloat(value)) :
             value;
+
+        // Debug para ver qué está cambiando
+        console.log(`Campo: ${name}, Valor: ${value}, Procesado: ${processedValue}`);
 
         setSelectedProduct({
             ...selectedProduct,
@@ -150,6 +150,8 @@ function ArticulosPage() {
             [name]: value
         });
     };
+
+    // Esta función se mantiene por compatibilidad
     //@ts-ignore
     const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
         setActiveTab(newValue);
@@ -204,7 +206,7 @@ function ArticulosPage() {
 
     // Funcionalidad de los botones principales
 
-    // Nuevo Artículo
+    // Nuevo Artículo - Ahora abre el modal
     const handleNewProduct = () => {
         // Generar un código único (podría generarse en el servidor en un caso real)
         const generateUniqueCode = () => {
@@ -236,14 +238,21 @@ function ArticulosPage() {
         setIsNewProduct(true);
         setIsEditing(true);
         setHighlightedRow('');
-        setActiveTab(1); // Cambiar a la pestaña de datos
+        setModalMode('create');
+        setIsModalOpen(true);
+        setOriginalProductCode(''); // No hay código original para un producto nuevo
     };
 
-    // Modificar Artículo
+    // Modificar Artículo - Ahora abre el modal
     const handleModifyProduct = () => {
         if (highlightedRow) {
+            // Guardar el código original para usarlo al actualizar
+            setOriginalProductCode(highlightedRow);
+            console.log(`Código original guardado: ${highlightedRow}`);
+            
             setIsEditing(true);
-            setActiveTab(1); // Cambiar a la pestaña de datos
+            setModalMode('edit');
+            setIsModalOpen(true);
         } else {
             setSnackbar({
                 open: true,
@@ -289,21 +298,29 @@ function ArticulosPage() {
                 stock: selectedProduct.stock
             };
 
+            console.log('Guardando producto:', productForTable);
+            console.log('Código original:', originalProductCode);
+            console.log('Es nuevo producto:', isNewProduct);
+
             if (isNewProduct) {
                 // Añadir nuevo producto
                 setProductData([...productData, productForTable]);
+                console.log('Producto nuevo añadido');
             } else {
-                // Actualizar producto existente
-                setProductData(productData.map(product =>
-                    product.codigo === selectedProduct.codigo ? productForTable : product
-                ));
+                // Si estamos editando un producto existente
+                // Creamos un nuevo array sin el producto original
+                const updatedData = productData.filter(p => p.codigo !== originalProductCode);
+                // Y añadimos el producto actualizado
+                updatedData.push(productForTable);
+                setProductData(updatedData);
+                console.log('Producto actualizado. Código original:', originalProductCode, 'Nuevo código:', productForTable.codigo);
             }
 
             setIsEditing(false);
             setIsNewProduct(false);
             setHighlightedRow(selectedProduct.codigo);
-            setActiveTab(0); // Volver a la pestaña de listado
-
+            setIsModalOpen(false); // Cerrar el modal después de guardar
+            
             setSnackbar({
                 open: true,
                 message: `Producto ${isNewProduct ? 'creado' : 'actualizado'} correctamente`,
@@ -605,6 +622,7 @@ function ArticulosPage() {
     };
 
     // Salir
+    //@ts-ignore
     const handleExit = () => {
         if (isEditing) {
             setOpenExitDialog(true);
@@ -673,35 +691,31 @@ function ArticulosPage() {
                 formatCurrency={formatCurrency}
             />
 
-            <TabsNavigation
-                activeTab={activeTab}
-                handleTabChange={handleTabChange}
+            {/* Tabla de productos (visible siempre) */}
+            <ProductTable
+                filteredData={filteredData}
+                highlightedRow={highlightedRow}
+                isEditing={isEditing}
+                sortField={sortField}
+                sortOrder={sortOrder}
+                searchQuery={searchQuery}
+                handleSort={handleSort}
+                handleRowClick={handleRowClick}
+                handleModifyProduct={handleModifyProduct}
+                handleDeleteProduct={handleDeleteProduct}
+                handlePrintTable={handlePrintTable}
+                setOpenExportMenuDialog={setOpenExportMenuDialog}
+                setSearchQuery={setSearchQuery}
+                handleNewProduct={handleNewProduct}
+                formatCurrency={formatCurrency}
+                isButtonDisabled={isButtonDisabled}
             />
 
-            {/* Contenido de las tabs */}
-            <Box sx={{ display: activeTab === 0 ? 'block' : 'none' }}>
-                <ProductTable
-                    filteredData={filteredData}
-                    highlightedRow={highlightedRow}
-                    isEditing={isEditing}
-                    sortField={sortField}
-                    sortOrder={sortOrder}
-                    searchQuery={searchQuery}
-                    handleSort={handleSort}
-                    handleRowClick={handleRowClick}
-                    handleModifyProduct={handleModifyProduct}
-                    handleDeleteProduct={handleDeleteProduct}
-                    handlePrintTable={handlePrintTable}
-                    setOpenExportMenuDialog={setOpenExportMenuDialog}
-                    setSearchQuery={setSearchQuery}
-                    handleNewProduct={handleNewProduct}
-                    formatCurrency={formatCurrency}
-                    isButtonDisabled={isButtonDisabled}
-                />
-            </Box>
-
-            {/* Pestaña de Detalles */}
-            <Box sx={{ display: activeTab === 1 ? 'block' : 'none' }}>
+            {/* Modal para Edición y Creación */}
+            <ProductModal
+                open={isModalOpen}
+                onClose={handleCloseModal}
+            >
                 <ProductForm
                     isEditing={isEditing}
                     isNewProduct={isNewProduct}
@@ -712,7 +726,7 @@ function ArticulosPage() {
                     handleSaveProduct={handleSaveProduct}
                     handleNewProduct={handleNewProduct}
                     handleUploadImage={handleUploadImage}
-                    handleExit={handleExit}
+                    handleExit={handleCloseModal}
                     isButtonDisabled={isButtonDisabled}
                     setIsEditing={setIsEditing}
                     setIsNewProduct={setIsNewProduct}
@@ -722,16 +736,14 @@ function ArticulosPage() {
                     familias={familias}
                     proveedores={proveedores}
                 />
-            </Box>
+            </ProductModal>
 
-            {/* Botones de acción flotantes (solo en modo listado) */}
-            {activeTab === 0 && (
-                <ActionButtons
-                    isEditing={isEditing}
-                    handleNewProduct={handleNewProduct}
-                    isButtonDisabled={isButtonDisabled}
-                />
-            )}
+            {/* Botones de acción flotantes */}
+            <ActionButtons
+                isEditing={isEditing}
+                handleNewProduct={handleNewProduct}
+                isButtonDisabled={isButtonDisabled}
+            />
 
             {/* Diálogos */}
             <DeleteDialog
@@ -749,7 +761,7 @@ function ArticulosPage() {
                     setIsEditing(false);
                     setIsNewProduct(false);
                     setOpenExitDialog(false);
-                    setActiveTab(0);
+                    setIsModalOpen(false);
 
                     // Restaurar datos originales
                     if (!isNewProduct) {
