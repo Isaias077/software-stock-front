@@ -19,6 +19,7 @@ import {
   Chip,
   Divider
 } from '@mui/material'; //@ts-ignore
+import logo from './assets/logo.png';
 import ArticulosPage from './Pages/ArticulosPage';
 import ProveedoresPage from './Pages/ProveedoresPage'; //@ts-ignore
 import ClientPage from './Pages/Clientes';
@@ -306,10 +307,12 @@ const App: React.FC = () => {
     <Box sx={{ width: 250, pt: 2, height: '100%', bgcolor: 'background.paper' }}>
       <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <StorefrontIcon color="primary" sx={{ fontSize: 30, mr: 1 }} />
-          <Typography variant="h6" fontWeight="bold" color="primary.main">
-            StockFácil
-          </Typography>
+          <Box 
+            component="img"
+            src={logo}
+            alt="StockFácil Logo"
+            sx={{ height: 40, mr: 1 }}
+          />
         </Box>
       </Box>
       <Divider sx={{ mb: 2 }} />
@@ -408,9 +411,29 @@ const App: React.FC = () => {
             {/* Logo/Brand for mobile */}
             {isMobile && (
               <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <StorefrontIcon color="primary" sx={{ mr: 1 }} />
+                <Box 
+                  component="img"
+                  src={logo}
+                  alt=""
+                  sx={{ height: 40, mr: 1 }}
+                />
                 <Typography variant="h6" fontWeight="bold" color="primary.main">
-                  StockFácil
+                  
+                </Typography>
+              </Box>
+            )}
+            
+            {/* Logo for desktop */}
+            {!isMobile && (
+              <Box sx={{ display: 'flex', alignItems: 'center', mr: 2 }}>
+                <Box 
+                  component="img"
+                  src={logo}
+                  alt="StockFácil Logo"
+                  sx={{ height: 40, mr: 1 }}
+                />
+                <Typography variant="h6" fontWeight="bold" color="primary.main">
+                  
                 </Typography>
               </Box>
             )}

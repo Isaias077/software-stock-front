@@ -1,54 +1,63 @@
-# React + TypeScript + Vite
+# Software Stock - Sistema de Gestión
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+![Banner](public/vite.svg) 
 
-Currently, two official plugins are available:
+Sistema moderno de gestión de inventario y ventas desarrollado con las mejores tecnologías web.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Características Principales 🚀
+- Gestión completa de artículos, proveedores y clientes
+- Módulos de compras, ventas y control de caja
+- Interfaz intuitiva con componentes Material-UI
+- Exportación de reportes en PDF
+- Atajos de teclado (F1-F7) para navegación rápida
+- Diseño responsive para móviles y tablets
 
-## Expanding the ESLint configuration
+## Tecnologías Utilizadas 🛠️
+- **Frontend**: React 19 + TypeScript
+- **UI Framework**: Material-UI v6 con Emotion
+- **Bundler**: Vite
+- **Utilidades**:
+  - jspdf y jspdf-autotable para generación de PDF
+  - date-fns para manejo de fechas
+  - react-to-print para impresión de componentes
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+## Instalación ⚙️
+1. Clonar repositorio
+```bash
+git clone https://github.com/tu-usuario/software-stock-front.git
+```
+2. Instalar dependencias
+```bash
+npm install
+```
+3. Iniciar entorno de desarrollo
+```bash
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Scripts Disponibles 📜
+| Comando | Descripción |
+|---------|-------------|
+| `npm run dev` | Inicia servidor de desarrollo |
+| `npm run build` | Genera build de producción |
+| `npm run lint` | Ejecuta análisis de código |
+| `npm run preview` | Previsualiza build de producción |
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+## Estructura de Proyecto 📂
 ```
+software-stock-front/
+├── src/
+│   ├── Pages/         # Componentes de página
+│   ├── components/    # Componentes reutilizables
+│   ├── App.tsx        # Componente principal
+│   └── main.tsx       # Punto de entrada
+├── public/            # Assets estáticos
+└── vite.config.ts     # Configuración de Vite
+```
+
+## Capturas de Pantalla 🖼️
+![Interfaz Principal](public/interfaz/dashboard.png)
+*Captura del dashboard principal con estadísticas clave*
+
+## Licencia 📄
+Este proyecto está bajo la licencia [MIT](LICENSE).
