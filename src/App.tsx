@@ -29,6 +29,7 @@ import CajaPage from './Pages/CajaPage'
 import UsuariosPage from './Pages/UsuariosPage';
 
 // Import icons (using Material Icons)
+import { BarChart as BarChartIcon } from '@mui/icons-material';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
@@ -43,6 +44,7 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import KeyboardIcon from '@mui/icons-material/Keyboard';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import SettingsIcon from '@mui/icons-material/Settings';
+import ContabilidadPage from './Pages/ContabilidadPage/ContabilidadPage';
 
 // Define theme
 const theme = createTheme({
@@ -109,7 +111,7 @@ const menuItems: MenuItem[] = [
   { icon: <PointOfSaleIcon />, text: 'Ventas', key: 'ventas', shortcut: 'F6' },
   { icon: <ReportIcon />, text: 'Caja', key: 'caja', shortcut: 'F7' },
   // Commented out but kept for potential future use
-  // { icon: <BarChartIcon />, text: 'Estadísticas', key: 'estadisticas', shortcut: 'F8' },
+  { icon: <BarChartIcon />, text: 'Contabilidad', key: 'estadisticas', shortcut: 'F8' },
   // { icon: <BuildIcon />, text: 'Mantenimiento', key: 'mantenimiento', shortcut: 'F9' },
   // { icon: <ReceiptIcon />, text: 'Contabilidad', key: 'contabilidad', shortcut: 'F10' },
   // { icon: <ExitToAppIcon />, text: 'Salir', key: 'salir', shortcut: 'F12' },
@@ -145,6 +147,9 @@ const App: React.FC = () => {
       } else if (e.key === 'F7') {
         e.preventDefault();
         setActivePage('caja');
+      } else if (e.key === 'F8') {
+        e.preventDefault();
+        setActivePage('estadisticas');
       }
     };
 
@@ -181,8 +186,8 @@ const App: React.FC = () => {
         return <CajaPage />
       case 'usuarios':
         return <UsuariosPage />
-      //case 'estadisticas':
-        //return <AdminDashboard />
+      case 'estadisticas':
+        return <ContabilidadPage />
       default:
         return (
         <Box sx={{ maxWidth: 1200, mx: 'auto', p: 2, backgroundColor: '#f5f7fa', height: '100vh' }}> 

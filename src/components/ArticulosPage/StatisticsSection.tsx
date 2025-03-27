@@ -11,7 +11,8 @@ interface StatisticsSectionProps {
 const StatisticsSection: React.FC<StatisticsSectionProps> = ({ productData, formatCurrency }) => {
     const totalProducts = productData.length;
     const outOfStockProducts = productData.filter(p => p.stock <= 0).length;
-    const totalValue = productData.reduce((sum, product) => sum + (product.precio * product.stock), 0);
+    const totalValue = productData.reduce((sum, product) => sum + (product.precio * product.stock), 0); //@ts-ignore
+    const damagedProducts = productData.filter(p => p.estado === 'roto').length;
 
     return (
         <Box sx={{ mb: 3 }}>
@@ -76,6 +77,35 @@ const StatisticsSection: React.FC<StatisticsSectionProps> = ({ productData, form
                                 >
                                     <ShoppingCartIcon sx={{ fontSize: 40, color: 'error.main', opacity: 0.8 }} />
                                 </Badge>
+                            </Box>
+                        </CardContent>
+                    </Card>
+                </Grid>
+
+                <Grid item xs={12} sm={6} md={4}>
+                    <Card
+                        elevation={2}
+                        sx={{
+                            borderRadius: 2,
+                            background: 'linear-gradient(45deg, #fbe9e7 30%, #ffccbc 90%)',
+                            transition: 'transform 0.2s',
+                            '&:hover': {
+                                transform: 'translateY(-4px)',
+                                boxShadow: 4
+                            }
+                        }}
+                    >
+                        <CardContent sx={{ p: 2 }}>
+                            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <Box>
+                                    <Typography color="text.secondary" variant="body2">
+                                        Productos en mal estado
+                                    </Typography>
+                                    <Typography variant="h4" fontWeight="bold" color="warning.main">
+                                        {damagedProducts}
+                                    </Typography>
+                                </Box>
+                                
                             </Box>
                         </CardContent>
                     </Card>
