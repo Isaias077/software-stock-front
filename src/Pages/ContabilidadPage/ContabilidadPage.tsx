@@ -6,7 +6,6 @@ import {
     Paper,
     Tabs,
     Tab,
-    Grid,
     Snackbar,
     Alert,
     CircularProgress,
@@ -92,7 +91,7 @@ const ContabilidadPage: React.FC = () => {
         start: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
         end: new Date(),
     });
-
+    //@ts-ignore
     const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
         setTabValue(newValue);
     };

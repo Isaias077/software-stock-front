@@ -58,6 +58,7 @@ const MostSoldProduct: React.FC<MostSoldProductProps> = ({
   showSnackbar
 }) => {
   const [products, setProducts] = useState<Product[]>([]);
+  //@ts-ignore
   const [loading, setLoading] = useState(false);
   const [totalRevenue, setTotalRevenue] = useState(0);
   const [totalProfit, setTotalProfit] = useState(0);

@@ -55,6 +55,7 @@ const LocationsSales: React.FC<LocationsSalesProps> = ({
     showSnackbar
 }) => {
     const [locations, setLocations] = useState<Location[]>([]);
+    // @ts-ignore
     const [loading, setLoading] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [page, setPage] = useState(0);
@@ -88,6 +89,7 @@ const LocationsSales: React.FC<LocationsSalesProps> = ({
     );
 
     // Handle pagination
+    //@ts-ignore
     const handleChangePage = (event: unknown, newPage: number) => {
         setPage(newPage);
     };

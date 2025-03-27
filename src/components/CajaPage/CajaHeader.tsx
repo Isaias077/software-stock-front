@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Typography, Chip, FormControl, Select, MenuItem, InputLabel, SelectChangeEvent, Button, Menu } from '@mui/material';
+import { Box, Typography, Chip, MenuItem, Button, Menu } from '@mui/material';
 import { Dashboard as DashboardIcon, LockOpen as LockOpenIcon, Lock as LockIcon, LocationOn as LocationOnIcon } from '@mui/icons-material';
 
 interface CajaHeaderProps {
